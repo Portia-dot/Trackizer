@@ -81,6 +81,9 @@ struct AuthView: View {
                     Buttons(text: "Sign In", action: {
                         authViewModel.login(withEmail: email, password: password)
                     }, colors: .pink)
+                    .navigationDestination(isPresented: $authViewModel.didAuthenticateUser){
+                        MainTabView()
+                    }
                     
                     Spacer()
                     Spacer()

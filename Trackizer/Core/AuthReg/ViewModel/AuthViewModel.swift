@@ -11,6 +11,7 @@ import FirebaseAuth
 import FirebaseFirestore
 
 class AuthViewModel: ObservableObject {
+    @Published var didAuthenticateUser = false
     @Published var userSession: FirebaseAuth.User?
     @Published var isLoading = false
     @Published var showLogOutAlert = false
@@ -85,8 +86,9 @@ class AuthViewModel: ObservableObject {
                     completion(false)
                 } else {
                     print("User data uploaded to Firestore, awaiting profile completion")
-                    self.tempSession = user  // Store user temporarily
+                    self.tempSession = user 
                     self.profileCompletionRequired = true
+                    self.didAuthenticateUser = true
                     completion(true)
                 }
             }
