@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct OpenScreen: View {
-    var onRegister: () -> Void
-    var onLoginOne: () -> Void
+    @EnvironmentObject var navigationManager: NavigationManager
     var body: some View {
         VStack{
             ZStack{
@@ -34,12 +33,9 @@ struct OpenScreen: View {
                 Text("is simply dummy text of the printing and typesetting industry.")
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
-                ReuseableButton(text: "Get Started", action: {
-                    onRegister()
-                }, colors: .pink)
-                ReuseableButton(text: "I have an account", action: {
-                    onLoginOne()
-                }, colors: .gray)
+                
+                ReuseableButton(text: "Get Started", destination: AnyView(AuthView(mode: .register)), colors: .pink)
+                ReuseableButton(text: "I have an account", destination: AnyView(AuthView(mode: .login)), colors: .gray)
             }
             .padding()
 //            Spacer()
@@ -50,8 +46,8 @@ struct OpenScreen: View {
 struct OpenScreen_Previews: PreviewProvider {
     static var previews: some View {
         OpenScreen(
-            onRegister: { print("Register tapped") },
-            onLoginOne: { print("Login tapped") }
+//            onRegister: { print("Register tapped") },
+//            onLoginOne: { print("Login tapped") }
         )
         .preferredColorScheme(.dark)
     }

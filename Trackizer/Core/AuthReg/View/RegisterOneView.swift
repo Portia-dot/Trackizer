@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct RegisterOneView: View {
-    @State private var path = NavigationPath()
+    @EnvironmentObject var navigationManager: NavigationManager
+    @StateObject var authViewModel = AuthViewModel()
     var body: some View {
         VStack{
             ZStack{
@@ -29,16 +30,19 @@ struct RegisterOneView: View {
             .frame(height: UIScreen.main.bounds.height / 2.5)
             
             VStack(spacing: 20){
-                ReuseableWithLogoView(text: "Sign Up With Apple", action: {
-                    path.append("empty")
-                }, colors: .blue, textColor: .white, imageName: "apple.logo")
-                
-                ReuseableWithLogoView(text: "Sign Up With Google", action: {
-                    path.append("empty")
-                }, colors: .green, textColor: .black, imageName: "g.circle")
-                ReuseableWithLogoView(text: "Sign Up With Apple", action: {
-                    path.append("empty")
-                }, colors: .gray, textColor: .white, imageName: "f.square")
+//                ReuseableWithLogoView(text: "Sign Up With Apple", action: {
+//                    print("Empty")
+////                    navigationManager.navigate(to: "empty")
+//                }, colors: .blue, textColor: .white, imageName: "apple.logo")
+//                
+//                ReuseableWithLogoView(text: "Sign Up With Google", action: {
+//                    print("Empty")
+////                    navigationManager.navigate(to: "empty")
+//                }, colors: .green, textColor: .black, imageName: "g.circle")
+//                ReuseableWithLogoView(text: "Sign Up With Apple", action: {
+//                    print("Empty")
+////                    navigationManager.navigate(to: "empty")
+//                }, colors: .gray, textColor: .white, imageName: "f.square")
             }
             .padding()
             Spacer()
@@ -46,9 +50,9 @@ struct RegisterOneView: View {
                 .bold()
             Spacer()
             
-            ReuseableButton(text: "Sign up with Email", action: {
-                path.append("registerEmail")
-            }, colors: .orange)
+//            ReuseableButton(text: "Sign up with Email", action: {
+////                navigationManager.navigate(to: "registerEmail")
+//            }, colors: .orange)
             .padding()
             Spacer()
             Text("By registering, you agree to our Terms of Use.")
@@ -56,22 +60,17 @@ struct RegisterOneView: View {
                 .padding()
                 .padding(.vertical,6)
                 .font(.caption)
+            
+        }
+    }
+    func register(){
         
-        }
-        .navigationDestination(for: String.self) { identifier in
-            switch identifier {
-            case "registerEmail":
-                AuthView(mode: .register)
-            case "empty":
-                EmptyView()
-            default:
-                Text("Unknown destination")
-            }
-        }
     }
 }
 
 #Preview {
     RegisterOneView()
+        .environmentObject(NavigationManager())
+        .environmentObject(AuthViewModel())
         .preferredColorScheme(.dark)
 }

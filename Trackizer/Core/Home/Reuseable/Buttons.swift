@@ -1,28 +1,30 @@
 //
-//  ReuseableButton.swift
+//  Buttons.swift
 //  Trackizer
 //
-//  Created by Modamori Oluwayomi on 2024-05-17.
+//  Created by Modamori Oluwayomi on 2024-06-02.
 //
 
 import SwiftUI
 
-struct ReuseableButton: View {
+struct Buttons: View {
     var text: String
-    var destination: AnyView
+    var action: (() -> Void)?
     var colors: Color
     @GestureState private var isPressed = false
     
     var body: some View {
-        NavigationLink(destination: destination){
+        Button {
+            action?()
+        } label: {
             Text(text)
                 .fontWeight(.bold)
-                .foregroundStyle(.white)
+                .foregroundColor(.white)
                 .padding()
                 .frame(maxWidth: .infinity)
                 .background(colors)
-                .clipShape(RoundedRectangle(cornerRadius: 25))
-                .shadow(color: colors.opacity(0.5), radius: 10, x: 0, y: 10)
+                .cornerRadius(25)
+                .shadow(color: colors.opacity(0.8), radius: 10, x: 0, y: 10)
                 .padding(.horizontal)
                 .scaleEffect(isPressed ? 0.96 : 1)
         }
@@ -31,14 +33,14 @@ struct ReuseableButton: View {
                 .updating($isPressed) { currentState, gestureState, transaction in
                     gestureState = currentState
                 }
+            
         )
-        .animation(.easeOut, value: isPressed)
+        
         
     }
 }
 
 #Preview {
-    ReuseableButton(text: "Get Started", destination: AnyView(OpenScreen()), colors: .gray)
-        .padding()
+    Buttons(text: "Get Started", colors: .pink)
+        .preferredColorScheme(.dark)
 }
-

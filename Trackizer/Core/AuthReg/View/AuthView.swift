@@ -9,6 +9,12 @@ import SwiftUI
 
 struct AuthView: View {
 //    var navigation: (String) -> Void
+    @EnvironmentObject var navigationManager: NavigationManager
+    @EnvironmentObject var authViewModel : AuthViewModel
+    @State private var isLoading = false
+    @State private var shouldNavigate = false
+    @State private var navigateToProfileDetails = false
+    @State private var navigationToMain = false
     enum AuthMode {
         case login
         case register
@@ -58,35 +64,43 @@ struct AuthView: View {
                     }
                 }
                 if mode == .register{
-                    ReuseableButton(text: "Get Started, its free!", action: {
-                        print("Register")
+                    Buttons(text: "Get Started, its free", action: {
+                        register()
                     }, colors: .pink)
-                    
+                    .padding(.top)
+                    .navigationDestination(isPresented: $navigateToProfileDetails) {
+                        ProfileDetailsView()
+                    }
                     Spacer()
                     Spacer()
                     
                     Text("Do you have an account already?")
-                    ReuseableButton(text: "Sign In", action: {
-                        print("Sign In")
-                    }, colors: .gray)
+                    ReuseableButton(text: "Sign In", destination: AnyView(AuthView(mode: .login)), colors: .gray)
                     Spacer()
                 } else {
-                    ReuseableButton(text: "Sign In", action: {
-                        print("Sign In")
+                    Buttons(text: "Sign In", action: {
+                        authViewModel.login(withEmail: email, password: password)
                     }, colors: .pink)
                     
                     Spacer()
                     Spacer()
                     
                     Text("If you dont have an account yet ?")
-                    ReuseableButton(text: "Sign In", action: {
-                        print("Sign UP")
-                    }, colors: .gray)
+                    ReuseableButton(text: "Sign Up", destination: AnyView(AuthView(mode: .register)), colors: .gray)
                 }
                 Spacer()
             }
 
             
+        }
+    }
+    func register(){
+        isLoading = true
+        authViewModel.registerUser(withEmail: email, password: password) {success in
+            isLoading = false
+            if success {
+                self.navigateToProfileDetails = true
+            }
         }
     }
 }
@@ -100,6 +114,6 @@ private func calculatePasswordStrength(password: String) -> Double{
 }
 
 #Preview {
-    AuthView( mode: .register)
+    AuthView( mode: .login)
         .preferredColorScheme(.dark)
 }

@@ -1,53 +1,47 @@
-//
-//  ContentView.swift
-//  Trackizer
-//
-//  Created by Modamori Oluwayomi on 2024-05-15.
-//
-
 import SwiftUI
 
 struct ContentView: View {
-    @State private var isShowingMain = false
-    @State private var path = NavigationPath()
+    @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject var navigationManager: NavigationManager
+    
     var body: some View {
-        NavigationStack(path: $path){
-            VStack {
-                if isShowingMain{
-                    //Login For Logged in users
-                    
-                    MainTabView()
-                }else{
-                    OpenScreen(
-                        onRegister: {path.append("register")},
-                        onLoginOne: { path.append("loginone") }
-                    )
-                        .transition(.slide)
-                        .preferredColorScheme(.dark)
-                        .toolbar(.hidden)
+                NavigationStack{
+                    if authViewModel.userSession == nil{
+                        OpenScreen()
+                    }else{
+                        MainTabView()
+                        
+                    }
                 }
+        .alert("Logged Out", isPresented: $authViewModel.showLogOutAlert) {
+            Button("Ok", role: .cancel) {
+                authViewModel.showLogOutAlert = false
             }
-            //IOS 16+
-            .navigationDestination(for: String.self) { identifier in
-                switch identifier {
-                case "main":
-                    MainTabView()
-                case "loginone":
-                    AuthView(mode: .login)
-                case "register":
-                    RegisterOneView() 
-                default:
-                    Text("Unknown View")
-                
-                }
-            }
+        } message: {
+            Text("You have been logged out because your account no longer exists")
+        }
+        .onChange(of: authViewModel.userSession, initial: false){
+            handleSessionChange()
+        }
+        .onAppear {
+            print("ContentView appeared, userSession: \(String(describing: authViewModel.userSession))")
         }
     }
-    private func navigate(to destination: String){
-        path.append(destination)
+    private func handleSessionChange(){
+        if authViewModel.userSession == nil {
+            print("No Active User Session")
+        }else {
+            print("User Session Is Dectected")
+        }
     }
 }
 
-#Preview {
-    ContentView()
+// Preview
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+            .environmentObject(AuthViewModel())
+            .environmentObject(NavigationManager())
+    }
 }
+

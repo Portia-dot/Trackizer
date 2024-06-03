@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
+    @State private var showSetting = false
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -22,28 +23,29 @@ struct HomeView: View {
                     SelectorView()
                     Spacer()
                 }
-                .toolbar{
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            print("Settings")
-                        } label: {
-                            Image(systemName: "gear")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                                .foregroundStyle(.gray)
-                                .padding()
-                        }
-
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                            NavigationLink(destination: SettingViews()) {
+                                Image(systemName: "gear")
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                    .foregroundStyle(.gray)
+                                    .padding()
+                            }
                     }
-            }
-            }
+                }
 
+            }
+            
             
         }
+        
+        
     }
         
 }
 
 #Preview {
     HomeView()
+        .environmentObject(AuthViewModel())
 }
